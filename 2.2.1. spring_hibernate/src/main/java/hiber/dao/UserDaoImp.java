@@ -1,6 +1,5 @@
 package hiber.dao;
 
-import hiber.model.Car;
 import hiber.model.User;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,28 +11,27 @@ import java.util.List;
 @Repository
 public class UserDaoImp implements UserDao {
 
-   @Autowired
-   private SessionFactory sessionFactory;
+    @Autowired
+    private SessionFactory sessionFactory;
 
-   @Override
-   public void add(User user) {
-      sessionFactory.getCurrentSession().save(user);
-   }
+    @Override
+    public void add(User user) {
+        sessionFactory.getCurrentSession().save(user);
+    }
 
-   @Override
-   @SuppressWarnings("unchecked")
-   public List<User> listUsers() {
-      TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery("from User");
-      return query.getResultList();
-   }
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<User> listUsers() {
+        TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("from User");
+        return query.getResultList();
+    }
 
-   @Override
-   public User getUserByCar(String model, int series) {
-      String hql = "from Car where model =: carModelParam and series =: carSeriesParam";
-      Car carTemp = (Car) sessionFactory.getCurrentSession().createQuery(hql)
-              .setParameter("carModelParam",model)
-              .setParameter("carSeriesParam", series)
-              .uniqueResult();
-      return carTemp.getUser();
-   }
+    @Override
+    public User getUserByCar(String model, int series) {
+        String HQL = "FROM User u where u.car.model =: carModelParam and u.car.series =: carSeriesParam";
+        return (User) sessionFactory.getCurrentSession().createQuery(HQL)
+                .setParameter("carModelParam", model)
+                .setParameter("carSeriesParam", series)
+                .getSingleResult();
+    }
 }
