@@ -5,10 +5,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Repository
@@ -24,18 +20,15 @@ public class UserDaoImp implements UserDao {
 
     @Override
     public List<User> listUsers() {
-        CriteriaBuilder criteriaBuilder = sessionFactory.getCurrentSession().getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-        Root<User> root = criteriaQuery.from(User.class);
-        criteriaQuery.select(root);
-        Query<User> query = sessionFactory.getCurrentSession().createQuery(criteriaQuery);
+        String hql = "from User";
+        Query<User> query = sessionFactory.getCurrentSession().createQuery(hql,User.class);
         return query.getResultList();
     }
 
     @Override
     public User getUserByCar(String model, int series) {
-        String HQL = "FROM User where car.model =: carModelParam and car.series =: carSeriesParam";
-        return (User) sessionFactory.getCurrentSession().createQuery(HQL)
+        String hql = "from User where car.model =: carModelParam and car.series =: carSeriesParam";
+        return sessionFactory.getCurrentSession().createQuery(hql, User.class)
                 .setParameter("carModelParam", model)
                 .setParameter("carSeriesParam", series)
                 .getSingleResult();
